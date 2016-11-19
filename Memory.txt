@@ -1,0 +1,94 @@
+# implementation of card game - Memory
+
+import simplegui
+import random
+
+# helper function to initialize globals
+def new_game():
+    global state, counter
+    state = 0
+    counter = 0
+    
+    global deck_cards,exposed
+    list1 = range(8)
+    list2 = range(8)
+    deck_cards = list1+list2
+    random.shuffle(deck_cards)
+    print deck_cards
+    exposed = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
+    
+# define event handlers
+def mouseclick(pos):
+    # add game state logic here
+    global deck_cards, card_number1, card_number2
+    global pos_number1, pos_number2
+    global exposed
+    global state, counter
+    
+
+    count = pos[0]//50
+    exposed[count] = True
+            
+    if state == 0:
+        state = 1
+        card_number1 = deck_cards[count]
+        pos_number1 = count
+        
+    elif state == 1:
+        state = 2
+        card_number2 = deck_cards[count]
+        pos_number2 = count
+        
+    else:
+        state = 1
+        if card_number1 is not card_number2:
+            
+            print "Card1:", card_number1
+            print "Card2:", card_number2
+  
+            exposed[pos_number1] = False
+            exposed[pos_number2] = False
+        
+            card_number1 = deck_cards[count]
+            pos_number1 = count
+            counter+=1
+            
+        else:
+            card_number1 = deck_cards[count]
+            pos_number1 = count
+            counter+=1
+            
+                        
+# cards are logically 50x100 pixels in size    
+def draw(canvas):
+    global state
+    global deck_cards
+    global exposed
+    j = 0
+ 
+    for i in deck_cards:
+        if exposed[j] == True: 
+            canvas.draw_text(str(i), [(50*j),50], 40,'Red')
+            j+=1
+        else:
+            canvas.draw_polygon([[50*j, 0], [50*j, 100], [50*j +50, 100], [50*j +50, 0]], 1, 'White', 'Green')
+            j+=1
+    
+    label.set_text("Turns = "+str(counter))
+    
+# create frame and add a button and labels
+frame = simplegui.create_frame("Memory", 800, 100)
+frame.add_button("Reset", new_game)
+label = frame.add_label("Turns = 0")
+
+
+# register event handlers
+frame.set_mouseclick_handler(mouseclick)
+frame.set_draw_handler(draw)
+
+# get things rolling
+new_game()
+frame.start()
+
+
+# Always remember to review the grading rubric
