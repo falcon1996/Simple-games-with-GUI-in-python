@@ -1,3 +1,6 @@
+# Final version of Memory
+###################################################
+
 import simplegui
 import random
 
@@ -110,5 +113,3 @@ new_game()
 frame.start()
     
     
-###################################################
-# Final version of Memory
